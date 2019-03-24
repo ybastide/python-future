@@ -465,7 +465,10 @@ def touch_import_top(package, name_to_import, node):
 
         # FromImport(package, [Leaf(token.NAME, name_to_import, prefix=u" ")])
 
-    children_import = [import_, Newline()]
+    if package in ("builtins",):
+        children_import = [import_, Leaf(token.COMMENT, u"# NOQA", prefix=u"  "), Newline()]
+    else:
+        children_import = [import_, Newline()]
     old_prefix = root.children[insert_pos].prefix
     root.children[insert_pos].prefix = u""
     root.insert_child(
