@@ -5,33 +5,36 @@ from future.utils import PY3
 
 if PY3:
     from urllib.request import *
+
     # This aren't in __all__:
-    from urllib.request import (getproxies,
-                                pathname2url,
-                                proxy_bypass,
-                                quote,
-                                request_host,
-                                splitattr,
-                                splithost,
-                                splitpasswd,
-                                splitport,
-                                splitquery,
-                                splittag,
-                                splittype,
-                                splituser,
-                                splitvalue,
-                                thishost,
-                                to_bytes,
-                                unquote,
-                                unwrap,
-                                url2pathname,
-                                urlcleanup,
-                                urljoin,
-                                urlopen,
-                                urlparse,
-                                urlretrieve,
-                                urlsplit,
-                                urlunparse)
+    from urllib.request import (
+        getproxies,
+        pathname2url,
+        proxy_bypass,
+        quote,
+        request_host,
+        splitattr,
+        splithost,
+        splitpasswd,
+        splitport,
+        splitquery,
+        splittag,
+        splittype,
+        splituser,
+        splitvalue,
+        thishost,
+        to_bytes,
+        unquote,
+        unwrap,
+        url2pathname,
+        urlcleanup,
+        urljoin,
+        urlopen,
+        urlparse,
+        urlretrieve,
+        urlsplit,
+        urlunparse,
+    )
 else:
     __future_module__ = True
     with suspend_hooks():
@@ -40,7 +43,8 @@ else:
         from urlparse import *
 
         # Rename:
-        from urllib import toBytes    # missing from __all__ on Py2.6
+        from urllib import toBytes  # missing from __all__ on Py2.6
+
         to_bytes = toBytes
 
         # from urllib import (pathname2url,

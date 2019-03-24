@@ -18,8 +18,12 @@ import lib2to3.pytree as pytree
 from lib2to3.fixer_util import Leaf, Node, Comma
 from lib2to3 import fixer_base
 from lib2to3.fixer_util import syms, does_tree_import
-from libfuturize.fixer_util import (token, future_import, touch_import_top,
-                                    wrap_in_fn_call)
+from libfuturize.fixer_util import (
+    token,
+    future_import,
+    touch_import_top,
+    wrap_in_fn_call,
+)
 
 
 def match_division(node):
@@ -28,13 +32,20 @@ def match_division(node):
     so we match that and only that.
     """
     slash = token.SLASH
-    return node.type == slash and not node.next_sibling.type == slash and \
-                                  not node.prev_sibling.type == slash
+    return (
+        node.type == slash
+        and not node.next_sibling.type == slash
+        and not node.prev_sibling.type == slash
+    )
 
-const_re = re.compile('^[0-9]*[.][0-9]*$')
+
+const_re = re.compile("^[0-9]*[.][0-9]*$")
+
 
 def is_floaty(node, div_idx):
-    return _is_floaty(node.children[0:div_idx]) or _is_floaty(node.children[div_idx+1:])
+    return _is_floaty(node.children[0:div_idx]) or _is_floaty(
+        node.children[div_idx + 1 :]
+    )
 
 
 def _is_floaty(expr):
@@ -47,14 +58,16 @@ def _is_floaty(expr):
     elif isinstance(expr, Node):
         # If the expression is a node, let's see if it's a direct cast to float
         if isinstance(expr.children[0], Leaf):
-            return expr.children[0].value == u'float'
+            return expr.children[0].value == u"float"
     return False
+
 
 def find_division(node):
     for i, child in enumerate(node.children):
         if match_division(child):
             return i
     return False
+
 
 def clone_div_operands(node, div_idx):
     children = []
@@ -65,13 +78,14 @@ def clone_div_operands(node, div_idx):
             children.append(child.clone())
 
     # Strip any leading space for the first number:
-    children[0].prefix = u''
+    children[0].prefix = u""
 
     return children
 
+
 class FixDivisionSafe(fixer_base.BaseFix):
     # BM_compatible = True
-    run_order = 4    # this seems to be ignored?
+    run_order = 4  # this seems to be ignored?
 
     _accept_type = token.SLASH
 
@@ -105,5 +119,5 @@ class FixDivisionSafe(fixer_base.BaseFix):
         if self.skip:
             return
         future_import(u"division", node)
-        touch_import_top(u'past.utils', u'old_div', node)
+        touch_import_top(u"past.utils", u"old_div", node)
         return wrap_in_fn_call("old_div", results, prefix=node.prefix)

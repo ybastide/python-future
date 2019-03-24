@@ -26,6 +26,7 @@ from lib2to3 import pytree, fixer_base
 from lib2to3.pgen2 import token
 from lib2to3.fixer_util import Name, Call, is_tuple
 
+
 class FixRaise(fixer_base.BaseFix):
 
     BM_compatible = True
@@ -68,6 +69,6 @@ class FixRaise(fixer_base.BaseFix):
             val.prefix = u""
             args = [val]
 
-        return pytree.Node(syms.raise_stmt,
-                           [Name(u"raise"), Call(exc, args)],
-                           prefix=node.prefix)
+        return pytree.Node(
+            syms.raise_stmt, [Name(u"raise"), Call(exc, args)], prefix=node.prefix
+        )

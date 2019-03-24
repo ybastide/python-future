@@ -61,7 +61,7 @@ PY36_PLUS = sys.version_info[0:2] >= (3, 6)
 PY2 = sys.version_info[0] == 2
 PY26 = sys.version_info[0:2] == (2, 6)
 PY27 = sys.version_info[0:2] == (2, 7)
-PYPY = hasattr(sys, 'pypy_translation_info')
+PYPY = hasattr(sys, "pypy_translation_info")
 
 
 def python_2_unicode_compatible(cls):
@@ -101,7 +101,7 @@ def python_2_unicode_compatible(cls):
     """
     if not PY3:
         cls.__unicode__ = cls.__str__
-        cls.__str__ = lambda self: self.__unicode__().encode('utf-8')
+        cls.__str__ = lambda self: self.__unicode__().encode("utf-8")
     return cls
 
 
@@ -130,31 +130,37 @@ def with_metaclass(meta, *bases):
     This has the advantage over six.with_metaclass of not introducing
     dummy classes into the final MRO.
     """
+
     class metaclass(meta):
         __call__ = type.__call__
         __init__ = type.__init__
+
         def __new__(cls, name, this_bases, d):
             if this_bases is None:
                 return type.__new__(cls, name, (), d)
             return meta(name, bases, d)
-    return metaclass('temporary_class', None, {})
+
+    return metaclass("temporary_class", None, {})
 
 
 # Definitions from pandas.compat and six.py follow:
 if PY3:
+
     def bchr(s):
         return bytes([s])
+
     def bstr(s):
         if isinstance(s, str):
-            return bytes(s, 'latin-1')
+            return bytes(s, "latin-1")
         else:
             return bytes(s)
+
     def bord(s):
         return s
 
-    string_types = str,
-    integer_types = int,
-    class_types = type,
+    string_types = (str,)
+    integer_types = (int,)
+    class_types = (type,)
     text_type = str
     binary_type = bytes
 
@@ -162,12 +168,14 @@ else:
     # Python 2
     def bchr(s):
         return chr(s)
+
     def bstr(s):
         return str(s)
+
     def bord(s):
         return ord(s)
 
-    string_types = basestring,
+    string_types = (basestring,)
     integer_types = (int, long)
     class_types = (type, types.ClassType)
     text_type = unicode
@@ -176,21 +184,25 @@ else:
 ###
 
 if PY3:
+
     def tobytes(s):
         if isinstance(s, bytes):
             return s
         else:
             if isinstance(s, str):
-                return s.encode('latin-1')
+                return s.encode("latin-1")
             else:
                 return bytes(s)
+
+
 else:
     # Python 2
     def tobytes(s):
         if isinstance(s, unicode):
-            return s.encode('latin-1')
+            return s.encode("latin-1")
         else:
-            return ''.join(s)
+            return "".join(s)
+
 
 tobytes.__doc__ = """
     Encodes to latin-1 (where the first 256 chars are the same as
@@ -198,29 +210,34 @@ tobytes.__doc__ = """
     """
 
 if PY3:
-    def native_str_to_bytes(s, encoding='utf-8'):
+
+    def native_str_to_bytes(s, encoding="utf-8"):
         return s.encode(encoding)
 
-    def bytes_to_native_str(b, encoding='utf-8'):
+    def bytes_to_native_str(b, encoding="utf-8"):
         return b.decode(encoding)
 
     def text_to_native_str(t, encoding=None):
         return t
+
+
 else:
     # Python 2
     def native_str_to_bytes(s, encoding=None):
-        from future.types import newbytes    # to avoid a circular import
+        from future.types import newbytes  # to avoid a circular import
+
         return newbytes(s)
 
     def bytes_to_native_str(b, encoding=None):
         return native(b)
 
-    def text_to_native_str(t, encoding='ascii'):
+    def text_to_native_str(t, encoding="ascii"):
         """
         Use this to create a Py2 native string when "from __future__ import
         unicode_literals" is in effect.
         """
         return unicode(t).encode(encoding)
+
 
 native_str_to_bytes.__doc__ = """
     On Py3, returns an encoded string.
@@ -240,8 +257,11 @@ if PY3:
 
     def lfilter(*args, **kwargs):
         return list(filter(*args, **kwargs))
+
+
 else:
     import __builtin__
+
     # Python 2-builtin ranges produce lists
     lrange = __builtin__.range
     lzip = __builtin__.zip
@@ -250,15 +270,16 @@ else:
 
 
 def isidentifier(s, dotted=False):
-    '''
+    """
     A function equivalent to the str.isidentifier method on Py3
-    '''
+    """
     if dotted:
-        return all(isidentifier(a) for a in s.split('.'))
+        return all(isidentifier(a) for a in s.split("."))
     if PY3:
         return s.isidentifier()
     else:
         import re
+
         _name_re = re.compile(r"[a-zA-Z_][a-zA-Z0-9_]*$")
         return bool(_name_re.match(s))
 
@@ -381,6 +402,7 @@ def _repr_strip(mystring):
 
 
 if PY3:
+
     def raise_from(exc, cause):
         """
         Equivalent to:
@@ -394,9 +416,11 @@ if PY3:
         # We pass the exception and cause along with other globals
         # when we exec():
         myglobals = myglobals.copy()
-        myglobals['__python_future_raise_from_exc'] = exc
-        myglobals['__python_future_raise_from_cause'] = cause
-        execstr = "raise __python_future_raise_from_exc from __python_future_raise_from_cause"
+        myglobals["__python_future_raise_from_exc"] = exc
+        myglobals["__python_future_raise_from_cause"] = cause
+        execstr = (
+            "raise __python_future_raise_from_exc from __python_future_raise_from_cause"
+        )
         exec(execstr, myglobals, mylocals)
 
     def raise_(tp, value=None, tb=None):
@@ -420,7 +444,9 @@ if PY3:
             _, _, traceback = sys.exc_info()
         raise exc.with_traceback(traceback)
 
+
 else:
+
     def raise_from(exc, cause):
         """
         Equivalent to:
@@ -455,7 +481,8 @@ else:
         e.__context__ = sys.exc_info()[1]
         raise e
 
-    exec('''
+    exec(
+        """
 def raise_(tp, value=None, tb=None):
     raise tp, value, tb
 
@@ -463,13 +490,12 @@ def raise_with_traceback(exc, traceback=Ellipsis):
     if traceback == Ellipsis:
         _, _, traceback = sys.exc_info()
     raise exc, None, traceback
-'''.strip())
+""".strip()
+    )
 
 
-raise_with_traceback.__doc__ = (
-"""Raise exception with existing traceback.
+raise_with_traceback.__doc__ = """Raise exception with existing traceback.
 If traceback is not passed, uses sys.exc_info() to get traceback."""
-)
 
 
 # Deprecated alias for backward compatibility with ``future`` versions < 0.11:
@@ -477,7 +503,7 @@ reraise = raise_
 
 
 def implements_iterator(cls):
-    '''
+    """
     From jinja2/_compat.py. License: BSD.
 
     Use as a decorator like this::
@@ -491,13 +517,14 @@ def implements_iterator(cls):
             def __next__(self):
                 return next(self._iter).upper()
 
-    '''
+    """
     if PY3:
         return cls
     else:
         cls.next = cls.__next__
         del cls.__next__
         return cls
+
 
 if PY3:
     get_next = lambda x: x.next
@@ -510,7 +537,7 @@ def encode_filename(filename):
         return filename
     else:
         if isinstance(filename, unicode):
-            return filename.encode('utf-8')
+            return filename.encode("utf-8")
         return filename
 
 
@@ -521,8 +548,10 @@ def is_new_style(cls):
     function to test for whether a class is new-style. (Python 3 only has
     new-style classes.)
     """
-    return hasattr(cls, '__class__') and ('__dict__' in dir(cls)
-                                          or hasattr(cls, '__slots__'))
+    return hasattr(cls, "__class__") and (
+        "__dict__" in dir(cls) or hasattr(cls, "__slots__")
+    )
+
 
 # The native platform string and bytes types. Useful because ``str`` and
 # ``bytes`` are redefined on Py2 by ``from future.builtins import *``.
@@ -537,7 +566,7 @@ def istext(obj):
     after this import:
         >>> from future.builtins import str
     """
-    return isinstance(obj, type(u''))
+    return isinstance(obj, type(u""))
 
 
 def isbytes(obj):
@@ -547,7 +576,7 @@ def isbytes(obj):
     after this import:
         >>> from future.builtins import bytes
     """
-    return isinstance(obj, type(b''))
+    return isinstance(obj, type(b""))
 
 
 def isnewbytes(obj):
@@ -560,6 +589,7 @@ def isnewbytes(obj):
     # TODO: generalize this so that it works with subclasses of newbytes
     # Import is here to avoid circular imports:
     from future.types.newbytes import newbytes
+
     return type(obj) == newbytes
 
 
@@ -611,7 +641,7 @@ def native(obj):
     >>> type(native(u'ABC'))
     unicode
     """
-    if hasattr(obj, '__native__'):
+    if hasattr(obj, "__native__"):
         return obj.__native__()
     else:
         return obj
@@ -620,8 +650,10 @@ def native(obj):
 # Implementation of exec_ is from ``six``:
 if PY3:
     import builtins
+
     exec_ = getattr(builtins, "exec")
 else:
+
     def exec_(code, globs=None, locs=None):
         """Execute code in a namespace."""
         if globs is None:
@@ -651,8 +683,8 @@ def old_div(a, b):
         return a / b
 
 
-def as_native_str(encoding='utf-8'):
-    '''
+def as_native_str(encoding="utf-8"):
+    """
     A decorator to turn a function or method call that returns text, i.e.
     unicode, into one that returns a native platform str.
 
@@ -664,16 +696,20 @@ def as_native_str(encoding='utf-8'):
             @as_native_str(encoding='ascii')
             def __repr__(self):
                 return next(self._iter).upper()
-    '''
+    """
     if PY3:
         return lambda f: f
     else:
+
         def encoder(f):
             @functools.wraps(f)
             def wrapper(*args, **kwargs):
                 return f(*args, **kwargs).encode(encoding=encoding)
+
             return wrapper
+
         return encoder
+
 
 # listvalues and listitems definitions from Nick Coghlan's (withdrawn)
 # PEP 496:
@@ -683,19 +719,28 @@ except AttributeError:
     # Python 3
     def listvalues(d):
         return list(d.values())
+
     def listitems(d):
         return list(d.items())
+
+
 else:
     # Python 2
     def listvalues(d):
         return d.values()
+
     def listitems(d):
         return d.items()
 
+
 if PY3:
+
     def ensure_new_type(obj):
         return obj
+
+
 else:
+
     def ensure_new_type(obj):
         from future.types.newbytes import newbytes
         from future.types.newstr import newstr
@@ -725,17 +770,50 @@ else:
             return obj
 
 
-__all__ = ['PY2', 'PY26', 'PY3', 'PYPY',
-           'as_native_str', 'bind_method', 'bord', 'bstr',
-           'bytes_to_native_str', 'encode_filename', 'ensure_new_type',
-           'exec_', 'get_next', 'getexception', 'implements_iterator',
-           'is_new_style', 'isbytes', 'isidentifier', 'isint',
-           'isnewbytes', 'istext', 'iteritems', 'iterkeys', 'itervalues',
-           'lfilter', 'listitems', 'listvalues', 'lmap', 'lrange',
-           'lzip', 'native', 'native_bytes', 'native_str',
-           'native_str_to_bytes', 'old_div',
-           'python_2_unicode_compatible', 'raise_',
-           'raise_with_traceback', 'reraise', 'text_to_native_str',
-           'tobytes', 'viewitems', 'viewkeys', 'viewvalues',
-           'with_metaclass'
-          ]
+__all__ = [
+    "PY2",
+    "PY26",
+    "PY3",
+    "PYPY",
+    "as_native_str",
+    "bind_method",
+    "bord",
+    "bstr",
+    "bytes_to_native_str",
+    "encode_filename",
+    "ensure_new_type",
+    "exec_",
+    "get_next",
+    "getexception",
+    "implements_iterator",
+    "is_new_style",
+    "isbytes",
+    "isidentifier",
+    "isint",
+    "isnewbytes",
+    "istext",
+    "iteritems",
+    "iterkeys",
+    "itervalues",
+    "lfilter",
+    "listitems",
+    "listvalues",
+    "lmap",
+    "lrange",
+    "lzip",
+    "native",
+    "native_bytes",
+    "native_str",
+    "native_str_to_bytes",
+    "old_div",
+    "python_2_unicode_compatible",
+    "raise_",
+    "raise_with_traceback",
+    "reraise",
+    "text_to_native_str",
+    "tobytes",
+    "viewitems",
+    "viewkeys",
+    "viewvalues",
+    "with_metaclass",
+]
