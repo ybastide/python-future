@@ -87,7 +87,8 @@ libfuturize_fix_names_stage2 = {
     "libfuturize.fixes.fix_future_dict",
     "libfuturize.fixes.fix_division_safe",
     "libfuturize.fixes.fix_execfile",
-    "libfuturize.fixes.fix_future_builtins",
+    # "libfuturize.fixes.fix_future_builtins",
+    "libfuturize.fixes.fix_future_builtins_no_str",  # don't import str at this time
     # "libfuturize.fixes.fix_future_standard_library",  # magic import
     # "libfuturize.fixes.fix_future_standard_library_urllib",  # magic import
     "libfuturize.fixes.fix_future_moves_standard_library",
