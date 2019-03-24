@@ -45,6 +45,7 @@ lib2to3_fix_names_stage1 = {
 lib2to3_fix_names_stage2 = {
     # 'lib2to3.fixes.fix_buffer',    # perhaps not safe. Test this.
     # 'lib2to3.fixes.fix_callable',  # not needed in Py3.2+
+    # "lib2to3.fixes.fix_dict",  # TODO: add support for utils.viewitems() etc. and move to stage2
     # 'lib2to3.fixes.fix_execfile',  # some problems: see issue #37.
     # We use a custom fixer instead (see below)
     # 'lib2to3.fixes.fix_future',    # we don't want to remove __future__ imports
@@ -83,6 +84,7 @@ libfuturize_fix_names_stage2 = {
     "libfuturize.fixes.fix_basestring_text_types",
     # 'libfuturize.fixes.fix_add__future__imports_except_unicode_literals',  # just in case
     "libfuturize.fixes.fix_cmp",
+    "libfuturize.fixes.fix_future_dict",
     "libfuturize.fixes.fix_division_safe",
     "libfuturize.fixes.fix_execfile",
     "libfuturize.fixes.fix_future_builtins",
