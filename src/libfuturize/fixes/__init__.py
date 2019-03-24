@@ -88,8 +88,10 @@ libfuturize_fix_names_stage2 = {
     "libfuturize.fixes.fix_division_safe",
     "libfuturize.fixes.fix_execfile",
     "libfuturize.fixes.fix_future_builtins",
-    "libfuturize.fixes.fix_future_standard_library",
-    "libfuturize.fixes.fix_future_standard_library_urllib",
+    # "libfuturize.fixes.fix_future_standard_library",  # magic import
+    # "libfuturize.fixes.fix_future_standard_library_urllib",  # magic import
+    "libfuturize.fixes.fix_future_moves_standard_library",
+    "libfuturize.fixes.fix_future_moves_standard_library_urllib",
     "libfuturize.fixes.fix_metaclass",
     "libpasteurize.fixes.fix_newstyle",
     "libfuturize.fixes.fix_object",
