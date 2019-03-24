@@ -96,7 +96,8 @@ libfuturize_fix_names_stage2 = {
     "libpasteurize.fixes.fix_newstyle",
     "libfuturize.fixes.fix_object",
     # 'libfuturize.fixes.fix_order___future__imports',  # TODO: consolidate to a single line to simplify testing
-    "libfuturize.fixes.fix_unicode_keep_u",
+    "libfuturize.fixes.fix_unicode_future_keep_u",
+    # "libfuturize.fixes.fix_unicode_keep_u",
     # 'libfuturize.fixes.fix_unicode_literals_import',
     "libfuturize.fixes.fix_xrange_with_import",  # custom one because of a bug with Py3.3's lib2to3
 }
