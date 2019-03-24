@@ -1,5 +1,6 @@
 # noinspection PyUnresolvedReferences
 import sys  # noqa
+
 # noinspection PyUnresolvedReferences
 from lib2to3 import refactor  # noqa
 
@@ -29,7 +30,7 @@ lib2to3_fix_names_stage1 = {
     # 'lib2to3.fixes.fix_raise',   # uses incompatible with_traceback() method on exceptions
     "lib2to3.fixes.fix_reduce",  # reduce is available in functools on Py2.6/Py2.7
     "lib2to3.fixes.fix_renames",  # sys.maxint -> sys.maxsize
-    'lib2to3.fixes.fix_set_literal',  # this breaks Py2.6 support
+    "lib2to3.fixes.fix_set_literal",  # this breaks Py2.6 support
     "lib2to3.fixes.fix_repr",
     "lib2to3.fixes.fix_standarderror",
     "lib2to3.fixes.fix_sys_exc",
@@ -59,7 +60,7 @@ lib2to3_fix_names_stage2 = {
     "lib2to3.fixes.fix_long",
     "lib2to3.fixes.fix_map",
     # 'lib2to3.fixes.fix_metaclass', # causes SyntaxError in Py2! Use the one from ``six`` instead
-    "lib2to3.fixes.fix_next",
+    # "lib2to3.fixes.fix_next",
     "lib2to3.fixes.fix_nonzero",  # TODO: cause this to import ``object`` and/or add a decorator for mapping __bool__ to __nonzero__
     "lib2to3.fixes.fix_operator",  # we will need support for this by e.g. extending the Py2 operator module to provide those functions in Py3
     "lib2to3.fixes.fix_raw_input",
@@ -101,4 +102,5 @@ libfuturize_fix_names_stage2 = {
     # "libfuturize.fixes.fix_unicode_keep_u",
     # 'libfuturize.fixes.fix_unicode_literals_import',
     "libfuturize.fixes.fix_xrange_with_import",  # custom one because of a bug with Py3.3's lib2to3
+    "libfuturize.fixes.fix_next_def",
 }
