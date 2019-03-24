@@ -102,5 +102,6 @@ libfuturize_fix_names_stage2 = {
     # "libfuturize.fixes.fix_unicode_keep_u",
     # 'libfuturize.fixes.fix_unicode_literals_import',
     "libfuturize.fixes.fix_xrange_with_import",  # custom one because of a bug with Py3.3's lib2to3
+    "libfuturize.fixes.fix_index_on_iterator",
     "libfuturize.fixes.fix_next_def",
 }
