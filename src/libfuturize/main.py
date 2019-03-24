@@ -402,3 +402,7 @@ def main(args=None):
 
     # Return error status (0 if rt.errors is zero)
     return int(bool(rt.errors))
+
+
+if __name__ == '__main__':
+    sys.exit(main())
