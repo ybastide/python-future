@@ -65,7 +65,12 @@ class FixAbsoluteImport(FixImport):
                     self.warning(node, "absolute and local imports together")
                 return
 
-            new = FromImport(u".", [imp])
+            if imp.type == syms.dotted_as_names:
+                raise NotImplementedError
+            elif imp.type == syms.dotted_as_name:
+                new = FromImport(u"." + mod_name, imp.children[2:])
+            else:
+                new = FromImport(u".", [imp])
             new.prefix = node.prefix
             future_import(u"absolute_import", node)
             return new
