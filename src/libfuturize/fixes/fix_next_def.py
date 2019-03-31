@@ -5,7 +5,7 @@ Fix next -> __next__, keeping next as an alias.
 """
 import token
 from lib2to3 import fixer_base
-from lib2to3.fixer_util import Name, Newline, find_binding, find_indentation, syms
+from lib2to3.fixer_util import Name, Newline, find_binding, find_indentation
 from lib2to3.pytree import Leaf, Node
 
 from typing import TYPE_CHECKING
@@ -54,10 +54,10 @@ class FixNextDef(fixer_base.BaseFix):
         indentation = find_indentation(next_)
         _ = suite == next_.parent
         child = Node(
-            syms.simple_stmt,
+            self.syms.simple_stmt,
             [
                 Node(
-                    syms.expr_stmt,
+                    self.syms.expr_stmt,
                     [
                         Name(u"next"),
                         Leaf(token.EQUAL, u"=", prefix=u" "),
