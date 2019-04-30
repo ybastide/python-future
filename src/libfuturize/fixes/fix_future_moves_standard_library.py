@@ -7,6 +7,8 @@ using futures.move.
 from lib2to3 import fixer_base
 from lib2to3.fixer_util import attr_chain, Name
 
+from future.utils import text_type
+
 MAPPING = {
     "StringIO": "io",
     "cStringIO": "io",
@@ -138,7 +140,7 @@ class FixFutureMovesStandardLibrary(fixer_base.BaseFix):
             if "name_import" in results:
                 # If it's not a "from x import x, y" or "import x as y" import,
                 # marked its usage to be replaced.
-                self.replace[mod_name] = unicode(new_name)
+                self.replace[mod_name] = text_type(new_name)
             if "multiple_imports" in results:
                 # This is a nasty hack to fix multiple imports on a line (e.g.,
                 # "import StringIO, urlparse"). The problem is that I can't

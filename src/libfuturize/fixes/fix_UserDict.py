@@ -11,6 +11,8 @@ from lib2to3 import fixer_base
 from lib2to3.fixer_util import Name, attr_chain
 from lib2to3.fixes.fix_imports import alternates, build_pattern, FixImports
 
+from future.utils import text_type
+
 MAPPING = {"UserDict": "collections"}
 
 # def alternates(members):
@@ -80,7 +82,7 @@ class FixUserdict(FixImports):
         import_mod = results.get("module_name")
         if import_mod:
             mod_name = import_mod.value
-            new_name = unicode(self.mapping[mod_name])
+            new_name = text_type(self.mapping[mod_name])
             import_mod.replace(Name(new_name, prefix=import_mod.prefix))
             if "name_import" in results:
                 # If it's not a "from x import x, y" or "import x as y" import,
