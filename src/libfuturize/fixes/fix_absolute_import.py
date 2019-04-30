@@ -53,6 +53,7 @@ class FixAbsoluteImport(FixImport):
         else:
             have_local = False
             have_absolute = False
+            mod_name = u""
             for mod_name in traverse_imports(imp):
                 if self.probably_a_local_import(mod_name):
                     have_local = True
