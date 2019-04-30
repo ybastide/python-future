@@ -29,6 +29,15 @@ class FixFutureDict(fixer_base.BaseFix):
                               'iterkeys'|'iteritems'|'itervalues'|
                               'viewkeys'|'viewitems'|'viewvalues') >
          parens=trailer< '(' ')' >
+         item_0=(trailer< '[' '0' ']'  >)
+         tail=any*
+    >
+    |
+    power< head=any+
+         trailer< '.' method=('keys'|'items'|'values'|
+                              'iterkeys'|'iteritems'|'itervalues'|
+                              'viewkeys'|'viewitems'|'viewvalues') >
+         parens=trailer< '(' ')' >
          tail=any*
     >
     """
@@ -37,6 +46,7 @@ class FixFutureDict(fixer_base.BaseFix):
         head = results["head"]
         method = results["method"][0]  # Extract node for method name
         tail = results["tail"]
+        item_0 = results.get("item_0")
         syms = self.syms
         method_name = method.value
         isiter = method_name.startswith(u"iter")
@@ -66,7 +76,15 @@ class FixFutureDict(fixer_base.BaseFix):
         new = pytree.Node(syms.power, args)
         if not special:
             new.prefix = u""
-            new = Call(Name(method_name if isiter or isview else u"list"), [new])
+            if isiter or isview:
+                new_name = method_name
+            else:
+                if not item_0:
+                    new_name = u"list"
+                else:
+                    new_name = u"next"
+                    new = Call(Name(u"iter"), [new])
+            new = Call(Name(new_name), [new])
         if tail:
             new = pytree.Node(syms.power, [new] + tail)
         new.prefix = node.prefix
