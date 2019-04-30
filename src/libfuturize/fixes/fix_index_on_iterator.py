@@ -16,14 +16,16 @@ class FixIndexOnIterator(fixer_base.BaseFix):
 
     PATTERN = """
               power<
-                 ({expression}) fn_trailer=trailer< '(' [any] ')' > getitem=trailer< '[' any ']' >
+                 ({expression}) fn_trailer=trailer< '(' [any] ')' > getitem=trailer< '[' index=any ']' >
               rest=any* >
               |
               power<
                  ({expression}) fn_trailer=trailer< '(' [any] ')' > 
                  method_call=trailer< '.' method=any > method_args=trailer< '(' [any] ')' >
               rest=any* >
-    """.format(expression=expression)
+    """.format(
+        expression=expression
+    )
 
     def transform(self, node, results):
         if "getitem" in results:
@@ -34,18 +36,19 @@ class FixIndexOnIterator(fixer_base.BaseFix):
         name = results["name"]  # type: Leaf
         fn_trailer = results["fn_trailer"]  # type: Node
         getitem = results["getitem"]  # type: Node
+        index = results["index"]  # type: Leaf
         rest = results["rest"]
-        new_node = Node(self.syms.power, [
-            Name(u"list"),
-            Node(self.syms.trailer, [
-                LParen(),
-                Name(name.value),
-                fn_trailer.clone(),
-                RParen(),
-                getitem.clone(),
-            ] + [r.clone() for r in rest])
-        ],
-                        prefix=node.prefix)
+        list_or_next = Name(u"list") if index.value != u"0" else Name(u"next")
+        children = [LParen(), Name(name.value), fn_trailer.clone(), RParen()]
+        if index.value != u"0":
+            children += [getitem.clone()]
+        children += [r.clone() for r in rest]
+
+        new_node = Node(
+            self.syms.power,
+            [list_or_next, Node(self.syms.trailer, children)],
+            prefix=node.prefix,
+        )
         return new_node
 
     def transform_method_call(self, node, results):
@@ -54,16 +57,23 @@ class FixIndexOnIterator(fixer_base.BaseFix):
         method_call = results["method_call"]
         method_args = results["method_args"]
         rest = results["rest"]
-        new_node = Node(self.syms.power, [
-            Name(u"list"),
-            Node(self.syms.trailer, [
-                LParen(),
-                Name(name.value),
-                fn_trailer.clone(),
-                RParen(),
-                method_call.clone(),
-                method_args.clone(),
-            ] + [r.clone() for r in rest])
-        ],
-                        prefix=node.prefix)
+        new_node = Node(
+            self.syms.power,
+            [
+                Name(u"list"),
+                Node(
+                    self.syms.trailer,
+                    [
+                        LParen(),
+                        Name(name.value),
+                        fn_trailer.clone(),
+                        RParen(),
+                        method_call.clone(),
+                        method_args.clone(),
+                    ]
+                    + [r.clone() for r in rest],
+                ),
+            ],
+            prefix=node.prefix,
+        )
         return new_node
